@@ -1,0 +1,393 @@
+{
+  "generated_at": "2026-11-26T14:24:21+00:00",
+  "data": {
+    "symbols": 59,
+    "sessions": 760,
+    "start": "2023-12-28",
+    "end": "2026-11-25",
+    "headlines": 3422
+  },
+  "direction": {
+    "n_folds": 5,
+    "n_rows": 42420,
+    "n_sessions": 719,
+    "features": [
+      "ret_1d",
+      "ret_5d",
+      "ret_20d",
+      "vol_20d",
+      "vol_60d",
+      "volume_z_20",
+      "turnover_z_20",
+      "ma_gap_20",
+      "rsi_14",
+      "range_pct",
+      "gap_pct",
+      "market_ret",
+      "breadth",
+      "avg_volume_z"
+    ],
+    "models": {
+      "naive_prior": {
+        "accuracy_mean": 0.5177195428840554,
+        "accuracy_std": 0.030905402403498688,
+        "roc_auc_mean": 0.5,
+        "brier_mean": 0.2500153504183234,
+        "log_loss_mean": 0.6931785629568867,
+        "n_predictions": 33570,
+        "folds": [
+          {
+            "fold": 0,
+            "train_end": "2024-09-18",
+            "test_start": "2024-09-19",
+            "test_end": "2025-02-24",
+            "n_test": 6667,
+            "accuracy": 0.49287535623218837,
+            "roc_auc": 0.5,
+            "brier": 0.25088728128565313,
+            "log_loss": 0.6949234594064712,
+            "base_rate": 0.5071246437678116
+          },
+          {
+            "fold": 1,
+            "train_end": "2025-02-24",
+            "test_start": "2025-02-25",
+            "test_end": "2025-07-31",
+            "n_test": 6667,
+            "accuracy": 0.5098245087745613,
+            "roc_auc": 0.5,
+            "brier": 0.24990374837324367,
+            "log_loss": 0.6929546651057951,
+            "base_rate": 0.49017549122543874
+          },
+          {
+            "fold": 2,
+            "train_end": "2025-07-31",
+            "test_start": "2025-08-01",
+            "test_end": "2026-01-06",
+            "n_test": 6667,
+            "accuracy": 0.5779211039448028,
+            "roc_auc": 0.5,
+            "brier": 0.24851613961011126,
+            "log_loss": 0.6901790633689175,
+            "base_rate": 0.4220788960551972
+          },
+          {
+            "fold": 3,
+            "train_end": "2026-01-06",
+            "test_start": "2026-01-07",
+            "test_end": "2026-06-12",
+            "n_test": 6667,
+            "accuracy": 0.5108744562771862,
+            "roc_auc": 0.5,
+            "brier": 0.2501057034913338,
+            "log_loss": 0.6933593717323682,
+            "base_rate": 0.48912554372281386
+          },
+          {
+            "fold": 4,
+            "train_end": "2026-06-12",
+            "test_start": "2026-06-15",
+            "test_end": "2026-11-24",
+            "n_test": 6902,
+            "accuracy": 0.4971022891915387,
+            "roc_auc": 0.5,
+            "brier": 0.25066387933127504,
+            "log_loss": 0.6944762551708817,
+            "base_rate": 0.5028977108084614
+          }
+        ]
+      },
+      "logistic": {
+        "accuracy_mean": 0.5264777792695413,
+        "accuracy_std": 0.022216553803762782,
+        "roc_auc_mean": 0.5319493638576607,
+        "brier_mean": 0.24983780961647944,
+        "log_loss_mean": 0.6928791553139988,
+        "n_predictions": 33570,
+        "folds": [
+          {
+            "fold": 0,
+            "train_end": "2024-09-18",
+            "test_start": "2024-09-19",
+            "test_end": "2025-02-24",
+            "n_test": 6667,
+            "accuracy": 0.4937753112344383,
+            "roc_auc": 0.4886271479138641,
+            "brier": 0.25464959072611804,
+            "log_loss": 0.7026739705617675,
+            "base_rate": 0.5071246437678116
+          },
+          {
+            "fold": 1,
+            "train_end": "2025-02-24",
+            "test_start": "2025-02-25",
+            "test_end": "2025-07-31",
+            "n_test": 6667,
+            "accuracy": 0.5116244187790611,
+            "roc_auc": 0.5198164698883644,
+            "brier": 0.2501333232585277,
+            "log_loss": 0.6934294650617735,
+            "base_rate": 0.49017549122543874
+          },
+          {
+            "fold": 2,
+            "train_end": "2025-07-31",
+            "test_start": "2025-08-01",
+            "test_end": "2026-01-06",
+            "n_test": 6667,
+            "accuracy": 0.5291735413229338,
+            "roc_auc": 0.528501222337388,
+            "brier": 0.24913491487990347,
+            "log_loss": 0.6914482925560593,
+            "base_rate": 0.4220788960551972
+          },
+          {
+            "fold": 3,
+            "train_end": "2026-01-06",
+            "test_start": "2026-01-07",
+            "test_end": "2026-06-12",
+            "n_test": 6667,
+            "accuracy": 0.5579721013949303,
+            "roc_auc": 0.5714961223434014,
+            "brier": 0.24693218930207383,
+            "log_loss": 0.6869920076746574,
+            "base_rate": 0.48912554372281386
+          },
+          {
+            "fold": 4,
+            "train_end": "2026-06-12",
+            "test_start": "2026-06-15",
+            "test_end": "2026-11-24",
+            "n_test": 6902,
+            "accuracy": 0.5398435236163431,
+            "roc_auc": 0.5513058568052853,
+            "brier": 0.2483390299157742,
+            "log_loss": 0.6898520407157366,
+            "base_rate": 0.5028977108084614
+          }
+        ]
+      },
+      "hist_gbm": {
+        "accuracy_mean": 0.5291226412310216,
+        "accuracy_std": 0.01808389516166433,
+        "roc_auc_mean": 0.5288589147729914,
+        "brier_mean": 0.2567271270004703,
+        "log_loss_mean": 0.7088631515658469,
+        "n_predictions": 33570,
+        "folds": [
+          {
+            "fold": 0,
+            "train_end": "2024-09-18",
+            "test_start": "2024-09-19",
+            "test_end": "2025-02-24",
+            "n_test": 6667,
+            "accuracy": 0.5009749512524374,
+            "roc_auc": 0.4981324425295271,
+            "brier": 0.2710315349370799,
+            "log_loss": 0.7424212605755636,
+            "base_rate": 0.5071246437678116
+          },
+          {
+            "fold": 1,
+            "train_end": "2025-02-24",
+            "test_start": "2025-02-25",
+            "test_end": "2025-07-31",
+            "n_test": 6667,
+            "accuracy": 0.5239238038098095,
+            "roc_auc": 0.5361281919982945,
+            "brier": 0.25433509149337796,
+            "log_loss": 0.7030043328474241,
+            "base_rate": 0.49017549122543874
+          },
+          {
+            "fold": 2,
+            "train_end": "2025-07-31",
+            "test_start": "2025-08-01",
+            "test_end": "2026-01-06",
+            "n_test": 6667,
+            "accuracy": 0.5383230838458077,
+            "roc_auc": 0.5182573100903846,
+            "brier": 0.25275318315856277,
+            "log_loss": 0.6993907079022563,
+            "base_rate": 0.4220788960551972
+          },
+          {
+            "fold": 3,
+            "train_end": "2026-01-06",
+            "test_start": "2026-01-07",
+            "test_end": "2026-06-12",
+            "n_test": 6667,
+            "accuracy": 0.5560221988900556,
+            "roc_auc": 0.5645351754925693,
+            "brier": 0.248749619950292,
+            "log_loss": 0.691425131667082,
+            "base_rate": 0.48912554372281386
+          },
+          {
+            "fold": 4,
+            "train_end": "2026-06-12",
+            "test_start": "2026-06-15",
+            "test_end": "2026-11-24",
+            "n_test": 6902,
+            "accuracy": 0.526369168356998,
+            "roc_auc": 0.5272414537541814,
+            "brier": 0.25676620546303885,
+            "log_loss": 0.7080743248369082,
+            "base_rate": 0.5028977108084614
+          }
+        ]
+      }
+    }
+  },
+  "anomaly": {
+    "robust_zscore": {
+      "positives": 118,
+      "average_precision": 0.5284013047100785,
+      "roc_auc": 0.9974660785765773,
+      "precision_at_k": 0.5338983050847458,
+      "recall_at_k": 0.5338983050847458,
+      "lift_at_k": 202.8813559322034,
+      "k": 118
+    },
+    "isolation_forest": {
+      "positives": 118,
+      "average_precision": 0.9948515648355132,
+      "roc_auc": 0.9999837034667654,
+      "precision_at_k": 0.9661016949152542,
+      "recall_at_k": 0.9661016949152542,
+      "lift_at_k": 367.1186440677966,
+      "k": 118
+    }
+  },
+  "sentiment": {
+    "synthetic templates": {
+      "model": "lexicon",
+      "n": 3422,
+      "accuracy": 0.9541203974284045,
+      "macro_f1": 0.9545213857845593,
+      "labels": [
+        "positive",
+        "negative",
+        "neutral"
+      ],
+      "confusion": [
+        [
+          1129,
+          0,
+          84
+        ],
+        [
+          0,
+          1033,
+          73
+        ],
+        [
+          0,
+          0,
+          1103
+        ]
+      ],
+      "per_class": {
+        "positive": {
+          "precision": 1.0,
+          "recall": 0.9307502061005771,
+          "f1-score": 0.964133219470538,
+          "support": 1213.0
+        },
+        "negative": {
+          "precision": 1.0,
+          "recall": 0.933996383363472,
+          "f1-score": 0.9658719027582983,
+          "support": 1106.0
+        },
+        "neutral": {
+          "precision": 0.8753968253968254,
+          "recall": 1.0,
+          "f1-score": 0.9335590351248413,
+          "support": 1103.0
+        },
+        "accuracy": 0.9541203974284045,
+        "macro avg": {
+          "precision": 0.9584656084656085,
+          "recall": 0.9549155298213498,
+          "f1-score": 0.9545213857845593,
+          "support": 3422.0
+        },
+        "weighted avg": {
+          "precision": 0.9598371415583572,
+          "recall": 0.9541203974284045,
+          "f1-score": 0.9548403084193865,
+          "support": 3422.0
+        }
+      }
+    },
+    "Financial PhraseBank (all-agree)": {
+      "model": "lexicon",
+      "n": 2264,
+      "accuracy": 0.7314487632508834,
+      "macro_f1": 0.6017412086477515,
+      "labels": [
+        "positive",
+        "negative",
+        "neutral"
+      ],
+      "confusion": [
+        [
+          242,
+          41,
+          287
+        ],
+        [
+          75,
+          109,
+          119
+        ],
+        [
+          54,
+          32,
+          1305
+        ]
+      ],
+      "per_class": {
+        "positive": {
+          "precision": 0.6522911051212938,
+          "recall": 0.4245614035087719,
+          "f1-score": 0.5143464399574921,
+          "support": 570.0
+        },
+        "negative": {
+          "precision": 0.5989010989010989,
+          "recall": 0.35973597359735976,
+          "f1-score": 0.44948453608247424,
+          "support": 303.0
+        },
+        "neutral": {
+          "precision": 0.7627118644067796,
+          "recall": 0.9381739755571531,
+          "f1-score": 0.8413926499032882,
+          "support": 1391.0
+        },
+        "accuracy": 0.7314487632508834,
+        "macro avg": {
+          "precision": 0.6713013561430575,
+          "recall": 0.5741571175544283,
+          "f1-score": 0.6017412086477515,
+          "support": 2264.0
+        },
+        "weighted avg": {
+          "precision": 0.7129881476484103,
+          "recall": 0.7314487632508834,
+          "f1-score": 0.7066026772191847,
+          "support": 2264.0
+        }
+      }
+    }
+  },
+  "notes": [
+    "Prices are a deterministic NEPSE-shaped fixture unless live ingestion was used.",
+    "Direction accuracy near the base rate is the honest result on synthetic data.",
+    "Anomaly labels are injected events, so precision@k measures recovery, not alpha.",
+    "The lexicon is a baseline; FinBERT is the production path (pip install -e '.[nlp]')."
+  ]
+}

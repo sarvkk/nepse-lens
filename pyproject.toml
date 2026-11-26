@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nepse-lens"
+version = "0.1.0"
+description = "Market intelligence for the Nepal Stock Exchange: ingestion, features, anomaly detection, direction models, financial-news sentiment, and a visual dashboard."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Sarvajit Khadka" }]
+dependencies = [
+  "pandas>=2.0",
+  "numpy>=1.24",
+  "scikit-learn>=1.3",
+  "duckdb>=1.0",
+  "pyarrow>=14",
+  "fastapi>=0.110",
+  "uvicorn[standard]>=0.27",
+  "streamlit>=1.32",
+  "plotly>=5.18",
+  "requests>=2.31",
+  "PyYAML>=6.0",
+  "joblib>=1.3",
+]
+
+[project.optional-dependencies]
+torch = ["torch>=2.2"]
+nlp = ["torch>=2.2", "transformers>=4.40"]
+dev = ["pytest>=8.0", "httpx>=0.27", "ruff>=0.6"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

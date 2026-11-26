@@ -1,0 +1,13 @@
+.git
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+data/nepse.duckdb
+data/raw
+data/external
+data/processed
+reports
+docs
+.env
