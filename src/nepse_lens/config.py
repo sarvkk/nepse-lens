@@ -43,6 +43,8 @@ FIXTURE_DIR = DATA_DIR / "fixtures"
 RAW_DIR = DATA_DIR / "raw"
 REPORTS_DIR = Path(os.getenv("NEPSE_REPORTS_DIR", REPO_ROOT / "reports"))
 DB_PATH = Path(os.getenv("NEPSE_DB", DATA_DIR / "nepse.duckdb"))
+if os.getenv("VERCEL") == "1" and "NEPSE_DB" not in os.environ:
+    DB_PATH = DATA_DIR / "nepse-demo.duckdb"
 
 
 @dataclass(frozen=True)

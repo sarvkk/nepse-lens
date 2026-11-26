@@ -1,5 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "fastapi",
-  "buildCommand": "pip install -e . && python scripts/fetch_data.py --source fixture && python scripts/train.py"
+  "functions": {
+    "src/nepse_lens/api.py": {
+      "excludeFiles": "{tests/**,scripts/**,data/fixtures/**,data/raw/**,data/external/**,data/processed/**,reports/**,docs/**,.github/**,**/*.pyc,**/__pycache__/**,data/nepse.duckdb}"
+    }
+  }
 }

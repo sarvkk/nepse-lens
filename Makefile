@@ -1,7 +1,7 @@
-.PHONY: install fixture features train train-full test lint api dash preview phrasebank reproduce clean
+.PHONY: install fixture features train train-full test lint api dash preview phrasebank reproduce vercel-db clean
 
 install:
-	python -m pip install -e ".[dev]"
+	python -m pip install -e ".[full,dev]"
 
 fixture:
 	python scripts/fetch_data.py --source fixture
@@ -17,6 +17,9 @@ phrasebank:
 
 train-full: features phrasebank
 	python scripts/train.py --phrasebank data/external/FinancialPhraseBank-v1.0/Sentences_AllAgree.txt
+
+vercel-db: train
+	cp data/nepse.duckdb data/nepse-demo.duckdb
 
 test:
 	pytest

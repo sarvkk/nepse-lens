@@ -13,7 +13,7 @@ COPY src ./src
 COPY scripts ./scripts
 COPY data/fixtures ./data/fixtures
 
-RUN pip install .
+RUN pip install ".[full]"
 
 # Build the fixture database and reports into the image so both services start
 # without a separate init step.

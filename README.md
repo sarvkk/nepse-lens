@@ -72,7 +72,7 @@ git clone https://github.com/sarvkk/nepse-lens.git
 cd nepse-lens
 
 python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
+pip install -e ".[full,dev]"
 
 make train     # generate fixture → features → models → reports
 make dash      # http://localhost:8501
@@ -102,6 +102,10 @@ docker compose up --build
 # dashboard → http://localhost:8501
 # api       → http://localhost:8000/docs
 ```
+
+### Vercel API
+
+Vercel serves the FastAPI endpoints from the checked-in, read-only demo database. It does not install the training and dashboard packages or retrain models during deployment. To refresh the database snapshot, run `make vercel-db` and commit the updated `data/nepse-demo.duckdb`. Use Docker for the dashboard and full pipeline.
 
 ---
 

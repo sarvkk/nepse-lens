@@ -67,7 +67,7 @@ Anomaly metrics use sessions after the fit cutoff only: Isolation Forest and the
 ## Reproduction
 
 ```bash
-pip install -e ".[dev]"
+pip install -e ".[full,dev]"
 python scripts/fetch_data.py --source fixture
 python scripts/train.py
 python scripts/fetch_phrasebank.py

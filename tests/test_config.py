@@ -10,6 +10,18 @@ def test_project_root_contains_pyproject():
     assert config.DB_PATH.parent == config.DATA_DIR
 
 
+def test_vercel_uses_bundled_database(monkeypatch):
+    monkeypatch.setenv("VERCEL", "1")
+    monkeypatch.delenv("NEPSE_DB", raising=False)
+    reloaded = importlib.reload(config)
+    try:
+        assert reloaded.DB_PATH == reloaded.DATA_DIR / "nepse-demo.duckdb"
+        assert reloaded.DB_PATH.is_file()
+    finally:
+        monkeypatch.delenv("VERCEL")
+        importlib.reload(config)
+
+
 def test_data_dir_env_override(monkeypatch, tmp_path):
     monkeypatch.setenv("NEPSE_DATA_DIR", str(tmp_path))
     reloaded = importlib.reload(config)
