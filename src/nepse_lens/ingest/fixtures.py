@@ -5,8 +5,8 @@ Why synthetic data is checked in:
 * NEPSE's public JSON API requires a short-lived ``Salter`` bearer token that is
   minted by the site's Angular app. CI cannot hold one, and a demo that needs
   credentials is not reproducible.
-* The fixture generator produces the *shape* of real NEPSE data — 45 tickers,
-  ten sectors, 760 trading days, fat-tailed returns, volume that co-moves with
+* The fixture generator produces the *shape* of real NEPSE data — 59 tickers,
+  11 sectors, 760 trading days, fat-tailed returns, volume that co-moves with
   absolute return, and labelled anomaly events — so the whole pipeline,
   dashboard, API, and test suite run offline.
 
@@ -228,8 +228,12 @@ def generate_headlines(dates: pd.DatetimeIndex, seed: int = SEED) -> pd.DataFram
         for _ in range(int(rng.integers(3, 7))):
             label = str(rng.choice(["positive", "negative", "neutral"], p=[0.36, 0.32, 0.32]))
             template = str(rng.choice(TEMPLATES[label]))
-            symbol = str(rng.choice(symbols))
-            headline = template.format(sym=symbol, p=int(rng.integers(3, 40)), q=int(rng.integers(1, 5)))
+            symbol = str(rng.choice(symbols)) if "{sym}" in template else "MARKET"
+            headline = template.format(
+                sym=symbol if symbol != "MARKET" else "NEPSE",
+                p=int(rng.integers(3, 40)),
+                q=int(rng.integers(1, 5)),
+            )
             rows.append(
                 {
                     "id": f"h{idx:06d}",

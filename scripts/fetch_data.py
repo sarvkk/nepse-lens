@@ -23,6 +23,7 @@ def main() -> int:
     parser.add_argument("--source", choices=["fixture", "live"], default="fixture")
     parser.add_argument("--db", default=str(DB_PATH))
     parser.add_argument("--headlines", default=None, help="Optional CSV of headlines for live mode")
+    parser.add_argument("--regenerate", action="store_true", help="Rebuild the fixture CSVs from the seed")
     args = parser.parse_args()
 
     store.init_db(args.db)
@@ -30,7 +31,7 @@ def main() -> int:
 
     try:
         if args.source == "fixture":
-            if not (FIXTURE_DIR / "nepse_daily.csv").exists():
+            if args.regenerate or not (FIXTURE_DIR / "nepse_daily.csv").exists():
                 print("Generating fixture snapshot...")
                 fixtures.write_fixtures()
             prices, headlines, labels = fixtures.load_fixtures()

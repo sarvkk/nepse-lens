@@ -1,4 +1,4 @@
-.PHONY: install fixture features train test lint api dash reproduce clean
+.PHONY: install fixture features train train-full test lint api dash preview phrasebank reproduce clean
 
 install:
 	python -m pip install -e ".[dev]"
@@ -12,17 +12,26 @@ features: fixture
 train: features
 	python scripts/train.py
 
+phrasebank:
+	python scripts/fetch_phrasebank.py
+
+train-full: features phrasebank
+	python scripts/train.py --phrasebank data/external/FinancialPhraseBank-v1.0/Sentences_AllAgree.txt
+
 test:
 	pytest
 
 lint:
-	ruff check src tests scripts
+	ruff check src scripts tests
 
 api:
 	uvicorn nepse_lens.api:app --reload --port 8000
 
 dash:
 	streamlit run src/nepse_lens/dashboard.py --server.port 8501
+
+preview: train
+	python scripts/make_preview.py
 
 reproduce: lint test train
 	@echo "Reports written to reports/"

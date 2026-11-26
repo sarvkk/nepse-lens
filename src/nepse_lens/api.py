@@ -31,6 +31,16 @@ def _records(frame: pd.DataFrame) -> list[dict]:
     return clean.to_dict(orient="records")
 
 
+@app.get("/")
+def root() -> dict:
+    return {
+        "name": "NEPSE Lens API",
+        "version": __version__,
+        "docs": "/docs",
+        "endpoints": ["/health", "/tickers", "/ohlcv/{symbol}", "/anomalies", "/sentiment", "/predictions", "/market/summary"],
+    }
+
+
 @app.get("/health")
 def health() -> dict:
     con = _connect()
@@ -128,7 +138,7 @@ def market_summary() -> dict:
             raise HTTPException(status_code=404, detail="No prices loaded")
 
         rows = con.execute(
-            "SELECT symbol, close, volume, sector FROM prices WHERE date = ?", [last_date]
+            "SELECT symbol, close, volume, turnover, sector FROM prices WHERE date = ?", [last_date]
         ).df()
         previous = con.execute(
             "SELECT symbol, close FROM prices WHERE date = ("
@@ -146,7 +156,7 @@ def market_summary() -> dict:
             "symbols": int(len(merged)),
             "market_return": float(merged["ret_1d"].mean()),
             "breadth": float((merged["ret_1d"] > 0).mean()),
-            "turnover": float((merged["close"] * merged["volume"]).sum()),
+            "turnover": float(merged["turnover"].sum()),
             "sentiment_score": float(sentiment_row[0]) if sentiment_row else None,
             "sentiment_label": sentiment_row[1] if sentiment_row else None,
             "top_gainers": _records(

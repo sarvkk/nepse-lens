@@ -30,7 +30,7 @@ def render_report(metrics: dict[str, Any]) -> str:
         "",
         f"- Symbols: **{data.get('symbols', 'n/a')}**",
         f"- Sessions: **{data.get('sessions', 'n/a')}** ({data.get('start', '?')} → {data.get('end', '?')})",
-        f"- Headlines: **{data.get('headlines', 'n/a')}**",
+        f"- Headlines: **{data.get('headlines', 'n/a'):,}**" if isinstance(data.get("headlines"), int) else f"- Headlines: **{data.get('headlines', 'n/a')}**",
         "",
         "## Next-session direction (walk-forward)",
         "",
@@ -51,6 +51,17 @@ def render_report(metrics: dict[str, Any]) -> str:
         "generator injects a small AR(1) component, so a modest lift over `naive_prior` "
         "only proves the harness works. Re-run on real NEPSE data before claiming anything.",
         "",
+    ]
+
+    anomaly_eval = metrics.get("anomaly_evaluation")
+    if anomaly_eval:
+        lines.append(
+            f"Fitted detectors train on sessions on or before **{anomaly_eval.get('fit_end')}**; "
+            "the metrics below use later sessions only."
+        )
+        lines.append("")
+
+    lines += [
         "## Anomaly detection",
         "",
         "| Detector | Avg precision | ROC AUC | Precision@k | Recall@k | Lift@k |",

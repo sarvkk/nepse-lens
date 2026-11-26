@@ -1,11 +1,16 @@
 {
-  "generated_at": "2026-11-26T14:24:21+00:00",
+  "generated_at": "2026-11-26T15:12:21+00:00",
   "data": {
     "symbols": 59,
     "sessions": 760,
     "start": "2023-12-28",
     "end": "2026-11-25",
-    "headlines": 3422
+    "headlines": 3491
+  },
+  "anomaly_evaluation": {
+    "fit_fraction": 0.5,
+    "fit_end": "2025-06-11",
+    "note": "Fitted detectors train on or before fit_end; metrics use later sessions only."
   },
   "direction": {
     "n_folds": 5,
@@ -242,30 +247,32 @@
   },
   "anomaly": {
     "robust_zscore": {
-      "positives": 118,
-      "average_precision": 0.5284013047100785,
-      "roc_auc": 0.9974660785765773,
-      "precision_at_k": 0.5338983050847458,
-      "recall_at_k": 0.5338983050847458,
-      "lift_at_k": 202.8813559322034,
-      "k": 118
+      "positives": 61,
+      "n": 22420,
+      "average_precision": 0.5534502889277695,
+      "roc_auc": 0.9978810747716657,
+      "precision_at_k": 0.5573770491803278,
+      "recall_at_k": 0.5573770491803278,
+      "lift_at_k": 204.8589088954582,
+      "k": 61
     },
     "isolation_forest": {
-      "positives": 118,
-      "average_precision": 0.9948515648355132,
-      "roc_auc": 0.9999837034667654,
-      "precision_at_k": 0.9661016949152542,
-      "recall_at_k": 0.9661016949152542,
-      "lift_at_k": 367.1186440677966,
-      "k": 118
+      "positives": 61,
+      "n": 22420,
+      "average_precision": 0.9961217456466605,
+      "roc_auc": 0.999989002118192,
+      "precision_at_k": 0.9672131147540983,
+      "recall_at_k": 0.9672131147540983,
+      "lift_at_k": 355.49045955388334,
+      "k": 61
     }
   },
   "sentiment": {
     "synthetic templates": {
       "model": "lexicon",
-      "n": 3422,
-      "accuracy": 0.9541203974284045,
-      "macro_f1": 0.9545213857845593,
+      "n": 3491,
+      "accuracy": 0.9524491549699227,
+      "macro_f1": 0.9527210302831396,
       "labels": [
         "positive",
         "negative",
@@ -273,113 +280,52 @@
       ],
       "confusion": [
         [
-          1129,
+          1156,
           0,
-          84
+          88
         ],
         [
           0,
-          1033,
-          73
+          1062,
+          78
         ],
         [
           0,
           0,
-          1103
+          1107
         ]
       ],
       "per_class": {
         "positive": {
           "precision": 1.0,
-          "recall": 0.9307502061005771,
-          "f1-score": 0.964133219470538,
-          "support": 1213.0
+          "recall": 0.9292604501607717,
+          "f1-score": 0.9633333333333334,
+          "support": 1244.0
         },
         "negative": {
           "precision": 1.0,
-          "recall": 0.933996383363472,
-          "f1-score": 0.9658719027582983,
-          "support": 1106.0
+          "recall": 0.9315789473684211,
+          "f1-score": 0.9645776566757494,
+          "support": 1140.0
         },
         "neutral": {
-          "precision": 0.8753968253968254,
+          "precision": 0.8695993715632364,
           "recall": 1.0,
-          "f1-score": 0.9335590351248413,
-          "support": 1103.0
+          "f1-score": 0.9302521008403362,
+          "support": 1107.0
         },
-        "accuracy": 0.9541203974284045,
+        "accuracy": 0.9524491549699227,
         "macro avg": {
-          "precision": 0.9584656084656085,
-          "recall": 0.9549155298213498,
-          "f1-score": 0.9545213857845593,
-          "support": 3422.0
+          "precision": 0.956533123854412,
+          "recall": 0.953613132509731,
+          "f1-score": 0.9527210302831396,
+          "support": 3491.0
         },
         "weighted avg": {
-          "precision": 0.9598371415583572,
-          "recall": 0.9541203974284045,
-          "f1-score": 0.9548403084193865,
-          "support": 3422.0
-        }
-      }
-    },
-    "Financial PhraseBank (all-agree)": {
-      "model": "lexicon",
-      "n": 2264,
-      "accuracy": 0.7314487632508834,
-      "macro_f1": 0.6017412086477515,
-      "labels": [
-        "positive",
-        "negative",
-        "neutral"
-      ],
-      "confusion": [
-        [
-          242,
-          41,
-          287
-        ],
-        [
-          75,
-          109,
-          119
-        ],
-        [
-          54,
-          32,
-          1305
-        ]
-      ],
-      "per_class": {
-        "positive": {
-          "precision": 0.6522911051212938,
-          "recall": 0.4245614035087719,
-          "f1-score": 0.5143464399574921,
-          "support": 570.0
-        },
-        "negative": {
-          "precision": 0.5989010989010989,
-          "recall": 0.35973597359735976,
-          "f1-score": 0.44948453608247424,
-          "support": 303.0
-        },
-        "neutral": {
-          "precision": 0.7627118644067796,
-          "recall": 0.9381739755571531,
-          "f1-score": 0.8413926499032882,
-          "support": 1391.0
-        },
-        "accuracy": 0.7314487632508834,
-        "macro avg": {
-          "precision": 0.6713013561430575,
-          "recall": 0.5741571175544283,
-          "f1-score": 0.6017412086477515,
-          "support": 2264.0
-        },
-        "weighted avg": {
-          "precision": 0.7129881476484103,
-          "recall": 0.7314487632508834,
-          "f1-score": 0.7066026772191847,
-          "support": 2264.0
+          "precision": 0.9586498150445438,
+          "recall": 0.9524491549699227,
+          "f1-score": 0.9532495763125961,
+          "support": 3491.0
         }
       }
     }
@@ -387,6 +333,7 @@
   "notes": [
     "Prices are a deterministic NEPSE-shaped fixture unless live ingestion was used.",
     "Direction accuracy near the base rate is the honest result on synthetic data.",
+    "Anomaly metrics are out-of-sample: fitted detectors never see the evaluation half.",
     "Anomaly labels are injected events, so precision@k measures recovery, not alpha.",
     "The lexicon is a baseline; FinBERT is the production path (pip install -e '.[nlp]')."
   ]

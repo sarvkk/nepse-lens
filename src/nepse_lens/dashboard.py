@@ -99,7 +99,7 @@ cols[1].metric("20d volatility", f"{vol_20d * 100:.2f}%")
 cols[2].metric("Market sentiment", f"{latest_sentiment['score']:+.2f}" if latest_sentiment is not None else "n/a",
                latest_sentiment["label"] if latest_sentiment is not None else None)
 cols[3].metric("Anomalies (30d)", recent_count)
-cols[4].metric("Sessions", f"{len(prices):,} rows")
+cols[4].metric("Price rows", f"{len(prices):,}")
 
 candle = go.Figure()
 candle.add_trace(
@@ -132,7 +132,7 @@ candle.update_layout(
     xaxis_rangeslider_visible=False,
     margin={"l": 10, "r": 10, "t": 50, "b": 10},
 )
-st.plotly_chart(candle, use_container_width=True)
+st.plotly_chart(candle, width="stretch")
 
 left, right = st.columns(2)
 
@@ -154,7 +154,7 @@ with left:
         height=340,
         margin={"l": 10, "r": 10, "t": 50, "b": 10},
     )
-    st.plotly_chart(heatmap, use_container_width=True)
+    st.plotly_chart(heatmap, width="stretch")
 
 with right:
     wide = prices.pivot(index="date", columns="symbol", values="close").sort_index()
@@ -164,7 +164,7 @@ with right:
     breadth_frame.columns = ["date", "breadth"]
     st.plotly_chart(
         line_chart(breadth_frame.tail(lookback), "date", "breadth", "Market breadth — share of advancers", "#059669"),
-        use_container_width=True,
+        width="stretch",
     )
 
 if not market_sentiment.empty:
@@ -184,7 +184,7 @@ if not market_sentiment.empty:
         height=280,
         margin={"l": 10, "r": 10, "t": 50, "b": 10},
     )
-    st.plotly_chart(figure, use_container_width=True)
+    st.plotly_chart(figure, width="stretch")
 
 st.subheader("Anomaly feed")
 feed = recent_anomalies.sort_values("score", ascending=False).head(12).merge(
@@ -193,7 +193,7 @@ feed = recent_anomalies.sort_values("score", ascending=False).head(12).merge(
 feed = feed[["date", "symbol", "sector", "close", "score"]].rename(
     columns={"date": "Date", "symbol": "Symbol", "sector": "Sector", "close": "Close", "score": "Score"}
 )
-st.dataframe(feed, use_container_width=True, hide_index=True)
+st.dataframe(feed, width="stretch", hide_index=True)
 
 predictions = bundle["predictions"]
 if not predictions.empty:
@@ -203,7 +203,7 @@ if not predictions.empty:
     )
     st.dataframe(
         latest_preds[["symbol", "prob_up"]].rename(columns={"symbol": "Symbol", "prob_up": "P(up)"}).head(15),
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
     )
 

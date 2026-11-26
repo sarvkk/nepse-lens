@@ -6,6 +6,7 @@ import pandas as pd
 from nepse_lens.features import build_features, training_frame
 from nepse_lens.models.anomaly import (
     attach_labels,
+    chronological_cutoff,
     evaluate_anomaly,
     isolation_forest_anomaly,
     robust_zscore_anomaly,
@@ -54,7 +55,31 @@ def test_evaluate_anomaly_perfect_separation():
     assert result["roc_auc"] == 1.0
 
 
-def test_direction_report_beats_chance_on_fixture(fixture_data):
+def test_evaluate_anomaly_single_class_is_nan():
+    all_positive = pd.DataFrame({"is_injected": [True, True], "score": [0.9, 0.1]})
+    result = evaluate_anomaly(all_positive)
+    assert result["positives"] == 2
+    assert np.isnan(result["roc_auc"])
+    assert np.isnan(result["precision_at_k"])
+
+
+def test_chronological_cutoff_splits_sessions():
+    dates = pd.Series(pd.bdate_range("2026-01-01", periods=100))
+    cutoff = chronological_cutoff(dates, 0.5)
+    assert dates.min() < cutoff < dates.max()
+    assert (dates <= cutoff).sum() == 50
+
+
+def test_isolation_forest_fits_only_on_first_half(fixture_data):
+    prices, _, _ = fixture_data
+    features = build_features(prices)
+    scored = isolation_forest_anomaly(features, fit_fraction=0.5)
+    cutoff = chronological_cutoff(features["date"], 0.5)
+    assert scored.loc[scored["date"] <= cutoff, "in_sample"].all()
+    assert not scored.loc[scored["date"] > cutoff, "in_sample"].any()
+
+
+def test_direction_report_is_well_formed(fixture_data):
     prices, _, _ = fixture_data
     report = evaluate_direction(training_frame(build_features(prices)), n_splits=3, min_train=100)
     assert set(report["models"]) == {"naive_prior", "logistic", "hist_gbm"}

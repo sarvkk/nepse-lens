@@ -10,11 +10,13 @@
 
 ---
 
+> **Demo status:** This is a reproducible portfolio project, not a live trading or investment system. Its prices and anomaly labels are synthetic. The live NEPSE client exists, but real deployment needs a stable token source and historical backfill.
+
 ## Why this exists
 
-NEPSE is one of the least tooled major exchanges in South Asia. There is no clean public API, no open daily dataset, and most retail analysis happens in forum threads and screenshots. Meanwhile the interesting problems are exactly the ones a market-intelligence product needs: messy ingestion, point-in-time feature engineering, anomaly triage, and turning financial text into a signal you can actually plot.
+NEPSE does not offer a clean public API or open daily dataset. Much retail analysis happens in forum threads and screenshots. The missing tooling is the interesting part: messy ingestion, point-in-time features, anomaly triage, and turning financial text into a signal that can be plotted.
 
-NEPSE Lens is a small, end-to-end answer to that. It is deliberately a **pipeline**, not a notebook: every stage is a module with tests, the evaluation is walk-forward, and the output is an API plus a dashboard rather than a single chart.
+NEPSE Lens is an end-to-end pipeline rather than a notebook. Each stage is a module with tests. Evaluation uses walk-forward splits, and the result is an API and dashboard, not one chart.
 
 ---
 
@@ -25,17 +27,17 @@ NEPSE Lens is a small, end-to-end answer to that. It is deliberately a **pipelin
 | **Ingest** | Live NEPSE client (`Authorization: Salter` token, retries, raw JSON archive) or a bundled deterministic fixture snapshot. |
 | **Store** | DuckDB single-file warehouse. Idempotent upserts; no server to run. |
 | **Features** | Returns, rolling volatility, volume/turnover z-scores, MA gap, RSI, intrabar range, gap, market breadth — all point-in-time. |
-| **Anomaly detection** | Robust z-score, Isolation Forest, and an optional LSTM autoencoder, scored with precision@k and lift over a labelled event set. |
+| **Anomaly detection** | Robust z-score, Isolation Forest, and an optional LSTM autoencoder. Fitted detectors train on the first half of sessions and are scored on the second half. |
 | **Direction** | Next-session up/down with a naive prior, logistic regression, and histogram gradient boosting, evaluated on an expanding walk-forward split. |
 | **NLP** | Finance-tuned lexicon baseline plus an optional FinBERT path; evaluated on templated headlines and on Financial PhraseBank. |
 | **Serve** | FastAPI (`/ohlcv`, `/anomalies`, `/sentiment`, `/predictions`, `/market/summary`) and a Streamlit dashboard. |
-| **Ship** | Docker, docker-compose, GitHub Actions (ruff + pytest + full pipeline), model card, reproducible `make` targets. |
+| **Ship** | Docker, docker-compose, GitHub Actions (ruff + pytest + full pipeline), 53 tests, model card, reproducible `make` targets. |
 
 ---
 
 ## Results
 
-All numbers below are produced by `make train` on the bundled fixture (59 symbols, 760 sessions) plus Financial PhraseBank.
+The headline numbers below come from the bundled 59-symbol, 760-session fixture and, where noted, Financial PhraseBank. Run `make train-full` to reproduce the full table. `make train` reproduces the fixture-backed pipeline and templated-headline metrics, but does not evaluate PhraseBank.
 
 **Next-session direction — expanding walk-forward, 5 folds, no shuffling**
 
@@ -45,21 +47,21 @@ All numbers below are produced by `make train` on the bundled fixture (59 symbol
 | `logistic` | 52.6% ± 2.2% | 0.532 | 0.250 |
 | `hist_gbm` | **52.9% ± 1.8%** | 0.529 | 0.257 |
 
-**Anomaly detection — 118 labelled events**
+**Anomaly detection — 61 labelled events in the out-of-sample half (118 injected in total)**
 
 | Detector | Precision@k | Recall@k | Lift@k | Avg precision |
 | --- | ---: | ---: | ---: | ---: |
-| `robust_zscore` | 53.4% | 53.4% | 203× | 0.528 |
-| `isolation_forest` | 96.6% | 96.6% | 367× | 0.995 |
+| `robust_zscore` | 55.7% | 55.7% | 205× | 0.553 |
+| `isolation_forest` | 96.7% | 96.7% | 355× | 0.996 |
 
 **Headline sentiment**
 
 | Dataset | Model | Accuracy | Macro F1 | n |
 | --- | --- | ---: | ---: | ---: |
-| Templated NEPSE headlines | finance lexicon | 95.4% | 0.955 | 3,422 |
+| Templated NEPSE headlines | finance lexicon | 95.2% | 0.953 | 3,491 |
 | Financial PhraseBank (all-agree) | finance lexicon | 73.1% | 0.602 | 2,264 |
 
-> **Read the caveats before quoting these.** The price fixture is synthetic, and the generator injects a small AR(1) component so the walk-forward harness can be validated end to end. A 1.1-point lift over the naive prior proves the plumbing works; it is **not** evidence of a tradeable edge. The anomaly labels are injected extreme events, so detectors look better than they will on real data. The honest headline is the PhraseBank result: a no-training lexicon reaches 73% on real financial sentences, and FinBERT is the path to ~90%. See [MODEL_CARD.md](MODEL_CARD.md).
+> **Read the caveats.** The price fixture is synthetic and includes a small AR(1) component used to validate the walk-forward harness. The 1.1-point lift over the naive prior proves that the pipeline runs. It does not show a tradeable edge. Injected anomaly labels also make anomaly scores easier to recover than they would be on real events. The most useful NLP result is the lexicon's 73.1% accuracy on real Financial PhraseBank sentences. FinBERT reaches 97.2% on PhraseBank, but it was fine-tuned on that dataset. Treat 97.2% as an upper bound, not a benchmark. See [MODEL_CARD.md](MODEL_CARD.md).
 
 ---
 
@@ -77,7 +79,12 @@ make dash      # http://localhost:8501
 make api       # http://localhost:8000/docs
 ```
 
-`make train` writes `reports/metrics.json` and `reports/report.md`. The database lands in `data/nepse.duckdb` and is regenerable.
+`make train` writes `reports/metrics.json` and `reports/report.md`. The database lands in `data/nepse.duckdb` and is regenerable. To reproduce the PhraseBank numbers in this README:
+
+```bash
+make train-full   # fetches Financial PhraseBank, then trains with it
+make preview      # re-renders docs/preview.png (needs kaleido + Chrome)
+```
 
 ### Optional extras
 
@@ -85,6 +92,7 @@ make api       # http://localhost:8000/docs
 pip install -e ".[torch]"   # LSTM autoencoder
 pip install -e ".[nlp]"     # FinBERT (downloads ~440 MB)
 python scripts/train.py --torch --phrasebank data/external/FinancialPhraseBank-v1.0/Sentences_AllAgree.txt
+python scripts/evaluate.py --model finbert   # in-sample upper bound; see caveat above
 ```
 
 ### Docker
@@ -107,9 +115,11 @@ cp .env.example .env
 python scripts/fetch_data.py --source live
 ```
 
+`config.py` loads `.env` automatically (real environment variables still win), so the same token works for the CLI, the API, and the dashboard.
+
 Live mode archives every raw payload under `data/raw/` before normalising, so a schema change never destroys the original response. Because a single snapshot is not enough for features, a real deployment would run this on a schedule and backfill history.
 
-CI and the demo use `--source fixture` instead: a deterministic, NEPSE-shaped snapshot with 59 tickers, ten sectors, fat-tailed returns, volume that co-moves with absolute return, and labelled anomaly events. It is checked in under `data/fixtures/` so the repository is reproducible without credentials.
+CI and the demo use `--source fixture` instead: a deterministic, NEPSE-shaped snapshot with 59 tickers, eleven sectors, fat-tailed returns, volume that co-moves with absolute return, and labelled anomaly events. It is checked in under `data/fixtures/` so the repository is reproducible without credentials.
 
 ---
 
@@ -161,7 +171,7 @@ src/nepse_lens/
 
 ## Design decisions
 
-**DuckDB over Postgres.** One file, analytical SQL, no container to babysit. The whole store is 40 MB and rebuilds in seconds.
+**DuckDB over Postgres.** One file, analytical SQL, no container to babysit. The whole store is 13 MB and rebuilds in seconds.
 
 **Fixture-first.** A portfolio project that only runs with a private token is not reproducible. The fixture is the default; live mode is opt-in and documented.
 
@@ -177,7 +187,7 @@ src/nepse_lens/
 
 - **Real history.** Scheduled ingestion with a multi-year backfill, corporate-action adjustment, and a data-quality report (missing sessions, zero-volume days, splits).
 - **Better labels.** Replace injected events with hand-audited real events (circuit breakers, block deals, earnings surprises) and measure detector agreement with analysts.
-- **FinBERT fine-tune.** Fine-tune `ProsusAI/finbert` on PhraseBank + NEPSE headlines; target ~88–90% macro F1, and calibrate the neutral class instead of collapsing it.
+- **FinBERT fine-tune.** Evaluate on a benchmark FinBERT was *not* trained on (FiQA, or a hand-labelled NEPSE set) before quoting a number; PhraseBank is contaminated for this model.
 - **Cross-sectional model.** Predict relative rank within sector rather than absolute direction; that is closer to how a market-visualization product would surface "what moved and why."
 - **Deployment.** Model registry, scheduled retrain, drift monitoring on feature distributions, and a proper dashboard auth layer.
 

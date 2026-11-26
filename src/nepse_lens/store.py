@@ -85,9 +85,12 @@ def _replace(con: duckdb.DuckDBPyConnection, table: str, df: pd.DataFrame, cols:
     if df.empty:
         return 0
     frame = df[cols].copy()
+    column_list = ", ".join(cols)
     con.register("_incoming", frame)
     try:
-        con.execute(f"INSERT OR REPLACE INTO {table} SELECT * FROM _incoming")
+        con.execute(
+            f"INSERT OR REPLACE INTO {table} ({column_list}) SELECT {column_list} FROM _incoming"
+        )
     finally:
         con.unregister("_incoming")
     return len(frame)

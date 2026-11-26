@@ -18,6 +18,7 @@ from .config import DB_PATH, REPORTS_DIR
 from .features import build_features, training_frame
 from .models.anomaly import (
     attach_labels,
+    chronological_cutoff,
     evaluate_anomaly,
     isolation_forest_anomaly,
     lstm_autoencoder_anomaly,
@@ -35,6 +36,7 @@ from .nlp.sentiment import (
 from .report import render_report
 
 SENTIMENT_MODEL = "lexicon"
+ANOMALY_FIT_FRACTION = 0.5
 
 
 def _data_summary(prices: pd.DataFrame, headlines: pd.DataFrame) -> dict[str, Any]:
@@ -69,16 +71,20 @@ def run_pipeline(
 
         detectors: dict[str, pd.DataFrame] = {
             "robust_zscore": robust_zscore_anomaly(features),
-            "isolation_forest": isolation_forest_anomaly(features),
+            "isolation_forest": isolation_forest_anomaly(features, fit_fraction=ANOMALY_FIT_FRACTION),
         }
         if use_torch and HAS_TORCH:
-            detectors["lstm_autoencoder"] = lstm_autoencoder_anomaly(features)
+            detectors["lstm_autoencoder"] = lstm_autoencoder_anomaly(
+                features, fit_fraction=ANOMALY_FIT_FRACTION
+            )
 
+        cutoff_date = chronological_cutoff(features["date"], ANOMALY_FIT_FRACTION)
         anomaly_metrics: dict[str, Any] = {}
         anomaly_rows: list[pd.DataFrame] = []
         for name, scored in detectors.items():
             evaluated = attach_labels(scored, labels) if not labels.empty else scored.assign(is_injected=False)
-            anomaly_metrics[name] = evaluate_anomaly(evaluated)
+            out_of_sample = evaluated[evaluated["date"] > cutoff_date]
+            anomaly_metrics[name] = evaluate_anomaly(out_of_sample)
             rows = scored[["symbol", "date", "score", "is_anomaly"]].copy()
             rows["method"] = name
             anomaly_rows.append(rows)
@@ -122,12 +128,18 @@ def run_pipeline(
         metrics: dict[str, Any] = {
             "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "data": _data_summary(prices, headlines),
+            "anomaly_evaluation": {
+                "fit_fraction": ANOMALY_FIT_FRACTION,
+                "fit_end": str(pd.Timestamp(cutoff_date).date()),
+                "note": "Fitted detectors train on or before fit_end; metrics use later sessions only.",
+            },
             "direction": direction,
             "anomaly": anomaly_metrics,
             "sentiment": sentiment_metrics,
             "notes": [
                 "Prices are a deterministic NEPSE-shaped fixture unless live ingestion was used.",
                 "Direction accuracy near the base rate is the honest result on synthetic data.",
+                "Anomaly metrics are out-of-sample: fitted detectors never see the evaluation half.",
                 "Anomaly labels are injected events, so precision@k measures recovery, not alpha.",
                 "The lexicon is a baseline; FinBERT is the production path (pip install -e '.[nlp]').",
             ],

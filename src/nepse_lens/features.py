@@ -70,7 +70,7 @@ def add_market_features(df: pd.DataFrame) -> pd.DataFrame:
         df.groupby("date")
         .agg(
             market_ret=("ret_1d", "mean"),
-            breadth=("ret_1d", lambda s: float((s > 0).mean())),
+            breadth=("ret_1d", lambda s: float((s.dropna() > 0).mean()) if s.notna().any() else np.nan),
             avg_volume_z=("volume_z_20", "mean"),
             n_symbols=("symbol", "nunique"),
         )

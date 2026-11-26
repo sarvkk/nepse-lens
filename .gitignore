@@ -6,6 +6,9 @@ build/
 dist/
 .pytest_cache/
 .ruff_cache/
+.coverage
+htmlcov/
+coverage.xml
 .env
 data/nepse.duckdb
 data/nepse.duckdb.wal

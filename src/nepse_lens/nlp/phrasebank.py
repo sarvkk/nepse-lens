@@ -14,8 +14,10 @@ from pathlib import Path
 import pandas as pd
 import requests
 
+from ..config import DATA_DIR
+
 URL = "https://huggingface.co/datasets/takala/financial_phrasebank/resolve/main/data/FinancialPhraseBank-v1.0.zip"
-DEST_DIR = Path("data/external")
+DEST_DIR = DATA_DIR / "external"
 ARCHIVE = DEST_DIR / "FinancialPhraseBank-v1.0.zip"
 SENTENCES = DEST_DIR / "FinancialPhraseBank-v1.0" / "Sentences_AllAgree.txt"
 

@@ -38,7 +38,8 @@ def main() -> int:
     pivot = sector.pivot(index="sector", columns="date", values="ret_1d").iloc[:, -30:]
 
     wide = prices.pivot(index="date", columns="symbol", values="close").sort_index()
-    breadth = (wide.pct_change() > 0).mean(axis=1).reset_index()
+    returns = wide.pct_change()
+    breadth = (returns > 0).where(returns.notna()).mean(axis=1).reset_index()
     breadth.columns = ["date", "breadth"]
     breadth = breadth.tail(180)
 

@@ -1,0 +1,5 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "fastapi",
+  "buildCommand": "pip install -e . && python scripts/fetch_data.py --source fixture && python scripts/train.py"
+}

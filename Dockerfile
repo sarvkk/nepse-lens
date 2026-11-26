@@ -2,7 +2,9 @@ FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1
+    PIP_NO_CACHE_DIR=1 \
+    NEPSE_DATA_DIR=/app/data \
+    NEPSE_REPORTS_DIR=/app/reports
 
 WORKDIR /app
 
